@@ -1,4 +1,6 @@
 import sys
+import argparse
+import configparser
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -8,19 +10,16 @@ from selenium.webdriver.chrome.options import Options
 from time import sleep
 
 
-def bump_trades(url, email, password):
-    path_to_chrome_driver = sys.argv[1]
-    path_to_adblock = sys.argv[2]
-
+def bump_trades(url, email, password, path_to_adblock, path_to_chrome_driver):
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920,1080")
     chrome_options.add_argument("--start-maximized")
-    # chrome_options.add_experimental_option("excludeSwitches", ["disable-popup-blocking"])
+    chrome_options.add_experimental_option("excludeSwitches", ["disable-popup-blocking"])
     chrome_options.add_argument('load-extension=' + path_to_adblock)
 
     driver = webdriver.Chrome(path_to_chrome_driver, options=chrome_options)
-    driver.get("http://www.google.com")
+    # driver.get("http://www.google.com")
     driver.get(url)
 
     # accept privacy policy
@@ -43,9 +42,16 @@ def bump_trades(url, email, password):
         sleep(2)  # idk if that is necessary
         WebDriverWait(driver, 20).until(ec.element_to_be_clickable((By.XPATH, '/html/body/div[2]/div/span/i'))).click()
 
+config = configparser.ConfigParser()
+config.read("rl_garage.ini")
 
-email = sys.argv[3]
-password = sys.argv[4]
-url = sys.argv[5]
+# todo error handling
+email=config["DEFAULT"]["email"]
+password=config["DEFAULT"]["password"]
+path_to_adblock=config["DEFAULT"]["path_to_adblock"]
+path_to_chrome_driver=config["DEFAULT"]["path_to_chrome_driver"]
+username = config["DEFAULT"]["username"]
 
-bump_trades(url, email, password)
+url = "https://rocket-league.com/trades/" + username
+
+bump_trades(url, email, password, path_to_adblock, path_to_chrome_driver)
