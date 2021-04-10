@@ -1,0 +1,6 @@
+[DEFAULT]
+username=DerMa_2007
+email=haufemax@gmail.com
+password=
+path_to_chrome_driver=/home/max/PycharmProjects/chromedriver
+path_to_adblock=/home/max/PycharmProjects/3.10.2_0
